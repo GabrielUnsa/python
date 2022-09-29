@@ -1,0 +1,95 @@
+\documentclass[12pt]{report}
+\usepackage{blindtext}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm,amsmath,amssymb,pdfpages,caption,wrapfig,graphicx,framed}
+
+\begin{document}
+\section{Una reducion confusa}
+Vamos a reducir el $L_u$ al PCPM\\
+Dado $(M,\mathrm{w})$, construiremos un caso $(A,B)$ del PCPM tq
+\begin{center}
+M una MT acepta $\mathrm{w}$ $\mathtt{sii}$ $(A,B)$ tiene solucion
+\end{center}
+La idea del caso PCPM es simular a traves de soluciones parciales, el calculo de M sobre la entrada w.\\
+La solucion parcial constaran de cadenas que son prefijos de la secuencia de la configuracion de M:
+\begin{itemize}
+\item[$\gg$] $ \# \alpha_1 \# \alpha_2 ...$ donde $\alpha_i$ es la configuracion inicial de M para la entrada w.
+\item[$\gg$] $\alpha_i \vdash \alpha_{i+1}$
+\item[$\gg$] La cadena de la lista B siempre sera una configuracion anticipada de la cadena de la lista A a menos que entre en un estado de aceptacion.
+\end{itemize}
+Cuando esto ocurra existira pares disponibles talque la lista A $\mathbf{se iguale}$ a la lista B y asi genere una solucion.\\
+Pero si no ocurre esto no habra forma que los pares anteriores se usen y no existira una solucion.\\
+Usaremos un teorema de MT tq podemos suponer:
+\begin{itemize}
+\item[$\gg$] MT nunca escribe en blanco
+\item[$\gg$] Nunca se mueve a la izquierda de la posicion inicial del cabezal
+\end{itemize}  
+para simplificar la construccion de un caso PCPM. Entonces una configuracion de la MT sera una cadena $\alpha q \beta$ donde: 
+\begin{itemize}
+\item[$\gg$] $\alpha$ y $\beta$ no son blancos
+\item[$\gg$] q un estado. 
+\end{itemize}
+Pero permitiremos que $\beta$ sea la cadena vacia, si el cabezal apunte a un blanco situado inmediatamente a la derecha de $\alpha$.\\
+Por lo tanto los simbolos que constituyen $\alpha$ y $\beta$ se correponderan exactamente con el contenido de las casillas que almacenan la entrada mas cualquier casilla situada a la derecha que haya sido modificada previamente por el cabezal.
+\section{Definicion formal}
+Sea M$=(Q,\Sigma,\Gamma,\delta,q_0,B,F)$ una MT y sea w una cadena de entrada de $\Sigma^*$. Construiremos un caso del PCPM de la siguiente manera:
+
+1. El primer par es:
+\begin{center}
+ \begin{tabular}{ l  c}
+ 	Lista A & Lista B\\ 
+  	$\#$ & $\# q_0 w \#$\\
+ \end{tabular}
+\end{center}
+Este par debe ser el primero de cualquier solucion de acuerdo con la regla del PCPM, inicia la simulacion de M para la entrada w.\\
+
+
+2. Los simbolos de cinta y el separador $\#$ puede añadirse a ambas listas. Los pares:
+\begin{center}
+ \begin{tabular}{ l  c}
+ 	Lista A & Lista B\\
+ 	      X & X\\ 
+  	   $\#$ & $\#$\\
+ \end{tabular}
+\end{center}
+para cada X de $\Gamma$,permiten que se pueda copiar simbolos que no corresponden al estado.\\
+La seleccion de estos pares nos permitira:
+\begin{itemize}
+\item[$\gg$] Extender la cadena A para estar en correspondencia con la cadena B
+\item[$\gg$] al mismo tiempo copiar partes de la configuracion anterior al final de la cadena B
+\end{itemize}
+Esto nos ayudara a formar la siguiente configuracion al final de la cadena B\\
+
+3. Para simular un movimiento de M, disponemos de ciertos pares que reflejan dichos movimientos.$\forall q $ de $Q-F$, p de $Q$, y X,Y,Z de $\Gamma$ tenemos:
+\begin{center}
+ \begin{tabular}{ l c r}
+ 	Lista A & Lista B\\
+ 	qX & Yp & si $\delta(q,X)=\delta(p,Y,R)$\\
+ 	ZqX & pZY & si $\delta(q,X)=\delta(p,Y,L)$\\
+ 	q$\#$ & Yp$\#$ & si $\delta(q,B)=\delta(p,Y,R)$\\
+ 	Zq$\#$ & pZY$\#$ & si $\delta(q,B)=\delta(p,Y,L)$\\
+ \end{tabular}
+\end{center}
+con Z cualquier simbolo de la cinta.Esto nos permite exteneder la cadena B para extender la cadena A con el fin de que se corresponda con la cadena B. Sin embargo, estos pares emplean el estado para determinar las la configuraciónes que se va a incluir al final de la cadena B.\\
+
+4. Si la configuracion situada al final de la cadena B contiene un estado de aceptacion, entonces debemos permitir que la solucion parcial se convierta en una solucion completa. Para ello usaremos configuraciones (que no pertenecen a M) que representan lo que ocurriria si el estado de aceptacion permitiera consumir todos los simbolos de la cinta situados a cualquier lado de la misma.\\
+Entonces $q \in F \Rightarrow \forall X$ e $Y$ existe pares:
+\begin{center}
+ \begin{tabular}{ l c}
+ 	Lista A & Lista B\\
+ 	XqY & q\\
+ 	Xq & q\\
+ 	qY & q\\
+ \end{tabular}
+\end{center}
+\end{document}
+
+5. Por ultimo, una vez que el estado de aceptacion ha consumido todos los simbolos de la cinta, se mantiene como la ultima configuracion en la cadena B. Es decir, el resto de las dos cadenas (el sufijo de la cadena B que se tiene que añadir a la cadena A para que se corresponda con la cadena B) es q$\#$\\
+\begin{center}
+ \begin{tabular}{ l c}
+ 	Lista A & Lista B\\
+ 	q$\#\#$ & $\#$ 
+ \end{tabular}
+\end{center}
+\end{document}

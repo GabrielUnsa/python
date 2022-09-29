@@ -1,0 +1,446 @@
+\documentclass[12pt]{report}
+\usepackage{blindtext}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsthm,amsmath,amssymb,pdfpages,caption,wrapfig,graphicx,framed}
+
+\date{18 de Mayo de 2018}
+\author{Universidad Nacional de Salta \and Departamento de Informatica
+\and Teoria de la Computacion 3
+\\ Marmanillo, Walter Gabriel}
+
+\begin{document}	
+\newtheorem{thm}{Definición}[section]
+\newtheorem{tm}{Teorema}[section]
+\providecommand{\abs}[1]{\lvert#1\rvert}
+\tableofcontents
+
+\chapter{Introducción}
+\section{Introducción Coloración de Grafos}
+La \textbf{Coloración de Grafos} tiene sus inicios en la \textbf{Teoría de Grafos} de la mano de \textbf{Leonard Euler} (1707-1783) planteando el conocido \textbf{Problema de los Siete Puentes de Königsberg} (actualmente Kaliningrado Rusia), este problema consiste en encontrar un camino, tal que, pasando una única vez por cada uno de los puentes, se pudieran regresar al punto de partida. Tras años de estudios (1736) llego a demostrar que dicho problema es que no existe ningún camino cumpliendo esas características.\\
+En su demostración, se representa cada puente como una línea (arista) uniendo dos puntos (vértices), cada uno de los cuales se correspondía con una región diferente. Sentencio la demostración indicando que los puntos intermedios de un posible recorrido tienen que estar necesariamente conectados a un número par de aristas, de forma tal que los puntos inicial y final serían los únicos que podrían estar conectados por un número impar de líneas, lo cual no puede suceder pues este debe ser el mismo. Pero termino grafo fue introducido recién en 1878 por \textbf{J.J. Sylvester} en un artículo que estudia la relación entre el álgebra y los diagramas moleculares.\\ 
+En el año 1852 \textbf{Francis Guthrie} plantea la conjetura de los cuatro colores. Conjetura que fue presentada formalmente por \textbf{Arthur Cayley} en 1878 a la \textbf{London Mathematical Society} con el siguiente enunciado:\\
+\textsf{"Dada cualquier división de  un mapa plano en regiones, este puede ser coloreado, únicamente por cuatro colores, de manera que regiones con fronteras común tenga colores distintos.-"}\\
+Apenas pasado un año \textbf{Arthur B. Kempe} público un artículo en el cual proponía una demostración de la conjetura, pero en 1890 \textbf{P.J.Heawood} encontró un fallo en la demostración de Kempe, pero esto le sirvió para demostrar el teorema de los cinco colores.\\
+El teorema no fue demostrado hasta 1976 por \textbf{Kenneth Appel} y \textbf{Wolfgang Haken}, este fue el primer teorema matemático que se demostró con la computadora. %Iría la demostración de los señores?
+\\El teorema de los cuatro colores se considera el primer resultado de la coloración de grafos. Como ejemplo se considera un mapa cualquiera, se lo identifica con un grafo simple de manera tal que cada país le corresponda un vértice y sus fronteras serán representadas por la arista que une a los dos vértices. Entonces, tendremos que asignar un color a cada vértice de manera que dos vértices adyacentes no puedan llevar el mismo color, que es lo que se llamara coloración en vértices de un grafo.\\
+Este problema engloba además otras situaciones similares como, por ejemplo, la distribución de las conferencias de un congreso de manera que dos conferencias que puedan ser interesantes para una misma persona no se realicen al mismo tiempo, el almacenamiento de productos químicos donde hay7 determinados productos que no son incompatible entre sí, y por tanto se deben almacenar de manera independiente, o como distribuir las especies de animales en un zoológico teniendo en cuenta que hay especies que no pueden cohabitar en el mismo espacio. Todos estos problemas (y muchos más) se pueden resolver mediante la coloración de un grafo de la misma manera que se colorea un mapa. Desde este punto de vista es interesante estudiar el mínimo número de colores necesarios para colorear un grafo y la cantidad de combinaciones que surge de él.\\
+El informático teórico \textbf{Richard Karp} en 1972 publica su trabajo seminal \textsl{``Reducibility Among Combinatorial Problems"} en cual da a conocer una lista de 21 problemas computacionales famosos, que tratan sobre combinatoria y teoría de grafos, todos estos problemas pertenecen a la clase de complejidad NP-Completo, denominando así la lista como \textbf{Lista de 21 Problemas NP-Completo de Karp}
+
+\section{Definiciones}
+\begin{thm}
+\textsl{Un grafo G es un par ordenado G = (V,E), donde V es un conjunto de vértices y E es un conjunto de aristas. Un subgrafo de G es un grafo $G' = (V',E')$ donde $V' \subseteq V$ y $E' \subseteq E$. Un grafo conexo es un grafo tal que, para cada par de vértices del grafo, existe al menos una arista que los une, esto es $\forall$ $\mathnormal{u,v} \in V, \{\mathnormal{u,v}\} \in E $ 
+Sea G = (V,E) un grafo, formado por un conjunto de n vértices V y un conjunto m de aristas E. Dado el grafo G, el problema de coloración de grafos busca asignar a cada vértice $v \in V$ un entero $c(v) \in \{1,2,.....,k\}$ tal que:
+\begin{itemize}
+ \item $c(v) \neq c(u) \forall \{u,v\} \in E$
+ \item k es mínimo.
+\end{itemize}
+}
+\end{thm}
+
+Veamos ahora una serie de definiciones que pueden resultar de utilidad a la hora de describir una solución al problema de coloración de grafos y sus propiedades:
+
+\begin{thm}
+\textsl{Una coloración se dice factible si y solo si es completa y apropiada, es decir, que todos los vértices están asignados a algún color y que ningún par de vértices adyacentes ( dados $ \mathnormal{u,v} \in V \{ \mathnormal{u,v} \} \in E $ ) está asignado al mismo color.}
+\end{thm}
+
+\begin{thm}
+\textsl{El número cromático de un grafo G, $\chi (G)$ es el número mínimo de colores necesarios en una coloración factible de G. Una coloración factible de G usando exactamente $\chi (G)$ colores se considera óptima.}
+\end{thm}
+
+\begin{thm}
+\textsl{Un clique\footnote{Sea un grafo no dirigido G un clique es un conjunto de vértices V tal que para todo par de vértices de V, existe una arista que las conecta. Esto es equivalente a decir que el subgrafo inducido por V es un grafo completo} es un subconjunto de vértices $C \subseteq V$ adyacentes entre sí de forma que $\forall \mathnormal{u,v} \in C, \{\mathnormal{u,v}\} \in E$, es decir, que el subgrafo inducido por C es un grafo completo (presenta una arista entre cada par de vértices del grafo). Se denota $\omega (G)$ al número de vértices del mayor clique de G.}
+\end{thm}
+
+\begin{thm}
+\textsl{Dado un grafo G = (V,E), una matriz de adyacencia es una matriz $ A \in \mathbb{R}_{\mathfrak{n}\mathnormal{x}\mathfrak{n}}$ para la cual $A_{ij} = 1$ si y solo si los vértices $\mathnormal{v}_i$ y $\mathnormal{v}_j$ son adyacentes (es decir, existe una arista que los une), y $A_{ij} = 0$ en cualquier otro caso.}
+\end{thm}
+
+\begin{thm}
+\textsl{La vecindad de un vértice $\mathnormal{v} , \Gamma_G (\mathnormal{v})$, es un conjunto de vértices adyacentes a $\mathnormal{v}$ en el grafo G, es decir, $\Gamma_G (\mathnormal{v}) = \{  \mathnormal{u} \in V : \{ \mathnormal{v,u} \} \in E \}$. El grado de un vértice $\mathnormal{v}$ es la cardinalidad de su conjunto de vecinos, $\abs{\Gamma_G (\mathnormal{v})}$, que se suele denotar como $deg_G(\mathnormal{v})$}
+\end{thm}
+
+Resulta también útil para comprender el problema de coloración de grafos, plantearlo como un tipo de problema de particiones sobre el conjunto de vértices V, donde una solución S es representada por un conjunto de k clases de colores (o colores), $S = \{S_1,.....,S_k\}$. Para que la solución sea factible, es necesario que se cumplan las siguientes restricciones a la vez que se minimiza el número de colores k: 
+\begin{equation}
+\bigcup_{i=1}^{k}S_i = V, 
+\label{ecu:1}
+\end{equation}
+\begin{equation}
+S_i \cup S_j = \emptyset \hspace{0.3cm} (1 \leqslant \mathnormal{i} \not= \mathnormal{j} \leqslant k ),
+\label{ecu:2}
+\end{equation}
+\begin{equation}
+\forall \mathnormal{u,v} \in S_i , \{ \mathnormal{u,v} \} \not\in E \hspace{0.3cm}(1 \leqslant i \leqslant k)
+\label{ecu:3}
+\end{equation}
+Las restricciones (\ref{ecu:1}) y (\ref{ecu:2}) establecen que S debe ser una partición del conjunto de vértices V, mientras que la restricción (\ref{ecu:3}) obliga a que ningún par de vértices adyacentes sean asignados a la misma clase (o color), es decir, que todas las clases de colores en la solución debe ser conjuntos independientes.
+
+\section{Polinomio Cromático}
+\subsection{Definición}
+No sólo interesa saber si se puede colorear un grafo con k-colores, sino también de cuántas formas se puede colorear. La primera cuestión queda resulta en cuanto se conoce el número cromático, $\chi(g)$: si $k \geq \chi(G)$ podremos colorear el grafo con k colores, y si k $< \chi(G)$, será imposible colorear el grafo con k colores. Dedicamos esta subsección a la segunda cuestión.\\
+Aquí, como queremos contar y calcular, conviene que los colores sean números, y qué mejor que los números de 1 a k. Dado un grafo G y para cada entero k $\leq$ 1, llamamos: \\
+$P_G(k) = \# \{$coloración distintas de G usando los colores de la colección $\{1,....,k\}\},$
+\\teniendo en cuenta que no es necesario usarlo todos. Desde luego, $P_G$ es una función de k, y a este lo llamaremos el \textbf{polinomio cromático} de G:\\
+\begin{center}
+$P_G(k) = \sum_j \alpha_j k^j$
+\end{center}
+Los coeficientes ($\alpha_j$), contienen información importante sobre la estructura del grafo.\\
+Observaremos, para empezar, que como un isomorfismo entre grafos traslada coloraciones de uno en coloraciones del otro, los polinomios cromáticos deben coincidir: es decir, si G y $G'$ son dos grafos isomorfos, entonces $P_G(k) = P_{G'}(k)$, para cada entero $k \geq 1.$\\
+Puesto que, como hemos indicado, podemos tratar listas con restricciones usando el lenguaje de grafos coloreados, el polinomio cromático nos permitirá contar listas con restricciones. Así, si hemos formado un grafo G con n vértices y con aristas que codifican las restricciones, $P_G(k)$ nos informa del número de listas
+\begin{itemize}
+\item de longitud \textit{n} con repetición permitida con los símbolos $\{1,....,k\};$
+\item y tales que si $\{\textit{i,j} \in A(G)\}$, en las posiciones \textit{i} y \textit{j} de la lista usamos símbolos distintos.
+\end{itemize}
+El lenguaje de los polinomios cromáticos resulta ser una manera adecuada de organizar cálculos con el principio de inclusión/exclusión que hasta ahora empleábamos para abordar esta cuestión. Supongamos, por ejemplo, que queremos contar el número de \textit{n}-listas con \textit{k} símbolos que cumplen las restricciones que representamos simbólicamente a la derecha (distintos símbolos en las posiciones primera y segunda, en la segunda y tercera, etc. y así hasta las dos últimas posiciones; además, la primera y última posiciones deben llevar símbolos distintos). Dibujamos también el grafo correspondiente, que resulta ser un grafo circular $C_n$. Es la presencia de la restricción entre la primera y la última posición la que no nos permite contar las listas directamente, utilizando la regla del producto. Podríamos entonces aplicar el principio de inclusión/exclusión, calculando los tamaños de los conjuntos de \textit{n}-listas en las que va el mismo símbolo en las dos primeras, el mismo en la segunda y tercera etc., además de las intersecciones dos a dos, tres a tres, etc., para luego contabilizar estos números de la manera habitual.\\
+Pero, con ayuda del lenguaje y los algoritmos, descubriremos que la respuesta que buscamos, que no es otra que $P_{C_n}(k)$, el valor del polinomio cromático de $C_n$ en $k$, viene dada por la siguiente formula:
+\begin{center}
+$P_{C_n}(k)= ( k - 1 )^n + (-1)^n ( k - 1 )$
+\end{center}
+\subsection{Polinomio Cromático y Número Cromático}
+El polinomio cromático se pregunta cuantas coloraciones, y el numero cromático si hay alguna, así que cual es el número cromático debe de quedar recogido dentro del propio polinomio cromático. En efecto,
+\begin{enumerate}
+\item con menos de $\chi(G)$ colores no podemos colorear el grafo, asi que $P_G(k) = 0 $ si $k < \chi(G)$;
+\item pero con exactamente $\chi(G)$ colores se puede colorear el grafo de, al menos, una forma; por lo tanto, $P_G (\chi (G)) \geq 1$.
+\item De un cierto grafo G ya conocemos $P_G (k)$, el número de coloraciones distintas con k colores. Supongamos que ahora en nuestra paleta de colores disponemos de algunos más, digamos $k' > k$. ¿Cuantas coloraciones podremos formar con esos $k'$ colores$?$ Lo que es seguro es que las que ya teníamos con k colores seguimos teniéndolas ahora; y seguramente algunas más. Por tanto,
+\begin{center}
+si $k < k'$, entonces $P_G(k) \leq P_G(k')$
+\end{center}
+\end{enumerate}
+Reuniendo las tres propiedades anteriores, deducimos que:
+\begin{center}
+$\left\{
+	\begin{array}{ll}
+	$si  $ k \leq \chi(G) \Rightarrow P_G(k) \geq 1,\\
+	$si  $ k < \chi(G) \Rightarrow P_G(k) = 0.
+	\end{array}
+	\right.$
+\end{center}
+Así que, si tuviéramos la expresión del polinomio cromático, podríamos obtener el valor del número cromático como el menor valor entero de l en el que $P_G(k)$ no se anula.
+\section{Subgrafos y Polinomios Cromáticos}
+Supongamos que H es un subgrafo abarcador de un grafo G; esto es, H tiene los mismos vértices que G y algunas de sus aristas (o quizás todas). Disponemos, además, de k colores. Toda coloración de G con esos k colores induce una coloración de H, pues si dos vértices de H son vecinos en H, también lo son en G. De manera que, para cada
+$K \geq 1$, $P_G(k) \leq P_H(k)$ si H es subgrafo abarcador de G.\\
+\begin{wrapfigure}{l}{0.2\linewidth}
+    \centering
+    \includegraphics[width=1\linewidth]{/home/gabriel/Escritorio/Informe_TC3/Images/4m.png}
+\end{wrapfigure}
+Pero la condición de ser subgrafo abarcador es imprescindible. Considere dos grafos G y H (completos con tres y dos vértices).
+Desde luego, H es subgrafo (pero no abarcador) de G. Sus respectivos polinomios cromáticos son:\\
+\begin{center}
+$P_G(k)=k(k-1)(k-2)$ y $P_H(k)=k(k-1).$
+\end{center}
+Si k es suficientemente grande, $P_G(k) > P_H(k)$. Y es que, aunque sigue siendo cierto que toda coloración de G induce una en H, ahora puede haber muchas coloraciones de G que dan lugar a la misma en H.\\
+Nótese que, si un grafo G tiene n vértices, entonces G es subgrafo abarcador de un $K_n$. Además, un $N_n$ es subgrafo abarcador de G. Los polinomios respectivos de un $K_n$ y de un $N_n$ son:
+\begin{center}
+$P_{K_n}(k)=k(k-1)(k-2)....(k-n+1)$ y $P_{N_n}(k)=k^n.$
+\end{center}
+De donde deduciremos que, si G tiene n vértices, su polinomio cromático cumple que:
+\begin{center}
+k(k-1)...(k-n+1)$\leq P_G(k) \leq k^n$       para cualquier $k\geq1$
+\end{center}
+\subsection{Fuerza Bruta}
+La forma más intuitiva para resolver el problema es la fuerza bruta, es decir, comprobar uno a uno todas las posibles asignaciones entre colores y vértices para finalmente escoger el mejor. Pero esto tiene varias complicaciones, supongamos que el grafo tiene n vértices, entonces necesitaremos a lo sumo n colores. En este caso tendremos un total de $n^n$ soluciones posibles, es decir, un crecimiento exponencial de n (Absurdamente grande).
+\subsection{Grafos 0-regulares}
+Los grafos 0-regulares son grafos donde no hay vértices adyacentes, es decir, se trata de grafos G = (V,E), con $E = \emptyset$.\\ Basándonos en la estructura de dichos grafos, resulta trivial el hecho de que es un grafo es 0-regular si y solo si su número cromático es 1, es decir, pudiendo asignar todos los vértices al mismo color.
+Otra manera de plantearlo es, como no hay arista, así que no tenemos colores prohibidos para colorear los vértices, por lo que
+\begin{center}
+$P_{N_n}(k)=k^n$
+\end{center}
+Esto es son las n-listas con repetición permitida formadas con k símbolos, o el número total de aplicaciones de un conjunto con n elementos en otro con k elementos. Por cierto, de la expresión del polinomio cromático deducimos de nuevo que $\chi(N_n)=1.$
+
+\subsection{Grafos Lineal}
+El grafo lineal con tres vértices, $L_3$. Con 0 o con 1 color no podemos colorearlo, así que $P_{L_3}(0)=0$ y $P_{L_3}(1)=0$. ¿Y para un numero de colores k general? Intentemos contar las coloraciones directamente. Tendremos k posibles colores para el vértices $v_1;$ una vez coloreado, tendremos solo k-1 disponible para $v_2$, porque está prohibido utilizar el color que hayamos asignado al vértice $v_1$. Finalmente, para $v_3$ también hay un color prohibido, el utilizado para $v_2$, así que, utilizando la regla del producto,
+\begin{center}
+$P_{L_3}(k)=k(k-1)(k-1)=k(k-1)^2$
+\end{center}
+Un argumento análogo nos permite concluir que, para el grafo lineal con n vértices, $L_n$,
+\begin{center}
+$P_{L_n}(k)=k(k-1)^{n-1}$
+\end{center}
+y que, por tanto, $\chi (L_n) = 2$.
+
+\subsection{Grafos Planos}
+Los grafos planos son aquellos que pueden ser representados en el plano, sin que ninguna de las aristas del grafo corte a otra. Este se ajusta a lo que hemos visto en cuanto al Teorema de los Cuatro Colores (si un grafo es plano entonces puede ser coloreado de forma factible utilizando 4 o menos colores), aunque el reciproco no es necesariamente cierto. En la siguiente figura podemos ver unos cuatro ejemplos de coloraciones de grafos planos. En a) Vemos como dependiendo del número de vértices del grafo cíclico (si es par o impar), son necesarios 2 o 3 colores para obtener una coloración del grafo. En b) y c) vemos como obtener una coloración de los grafos de rueda, que se obtienen a partir de los cíclicos añadiendo un nuevo vértice en el centro, con aristas conectando el vértice central a todos los vértices exteriores. En consecuencia, para obtener una coloración factible de dichos grafos, serán necesarios 3 o 4 colores, dependiendo de si el número de vértices del grafo es par o impar.
+\begin{center}
+\includegraphics[height=4cm]{/home/gabriel/Escritorio/Informe_TC3/Images/3m.png}\\
+Figura 1: Grafos Planos
+\end{center}
+
+\subsection{Grafos Completos}
+Los grafos completos con n vértices, denotados por $K_n$ , son grafos que presentan una arista entre cada par de vértices del grafo, lo que proporciona un conjunto E de $m = \frac{n(n-1)}{2}$ aristas.\\
+Puesto que todos los vértices del grafo son adyacentes entre sí, cada vértice debe ser asignado a un color distinto, por lo que el número cromático de un grafo completo es $\chi(K_n) = n$. En la siguiente figura podemos ver una coloración para el grafo completo de 5 vértices.
+\begin{center}
+\includegraphics[height=4cm]{/home/gabriel/Escritorio/Informe_TC3/Images/1m.png}\\
+Figura 2: Grafos Completos
+\end{center}
+Otra manera de plantearlo, empezando con el de tres vértices, $K_3$. No podemos colorearlo con 1 o 2 colores, así que $P_{K_3}(1)=P_{K_3}(2)=0$. Pero de nuevo podemos contar directamente: no hay ningún color prohibido para $v_1$, uno para $v_2$ y dos para $v_3$, así que:
+\begin{center}
+$P_{K_3}(k)=k(k-1)(k-2)=k^3-3k^2+2k$
+\end{center}
+, donde el grado del polinomio es el número de vértices y el coeficiente del segundo término es el número de arista. 
+Y en general, si tenemos un $K_n$, el resultado es que:
+\begin{center}
+$P_{K_n}(k)=k(k-1)...(k-n+1)$
+\end{center}
+que coincide, como debe ser, con el número de n-listas sin repetición que se pueden formar con k símbolos. Como n es el primer entero en el que este polinomio no se anula, $\chi(K_n)=n$.
+ 
+\subsection{Grafos Bipartitos}
+Los grafos bipartitos, denotamos por G = ($V_1$,$V_2$,E), son grafos cuyo vértices pueden ser particionados en dos conjuntos $V_1$ y $V_2$ tales que solo existen aristas entre vértices de $V_1$ y vértices de $V_2$. En consecuencia, $V_1$ y $V_2$ son conjuntos independientes, por lo que los grafos bipartitos pueden ser coloreados utilizando solo 2 colores, asignando todos los vértices de $V_1$ a un color y todos los vértices de $V_2$ al otro. Resulta evidente que $\chi(G) = 2$ si y solo si G es bipartito. En la siguiente figura podemos ver dos grafos bipartitos:
+\begin{center}
+\includegraphics[height=6cm]{/home/gabriel/Escritorio/Informe_TC3/Images/2m.png}\\
+Figura 3: Grafos Bipartitos
+\end{center}
+
+\subsection{Grafo Circular $C_n$}
+No tanto para $C_3$, que coincide con $K_3$. Pero si para $C_4$. Intentemos contar directamente el número de coloraciones, como hicimos en los otros ejemplos. El dibujo de la izquierda muestra el proceso, en el que vamos calculando las posibilidades a nuestra disposición en los sucesivos vértices. Al llegar al último vértice nos encontramos con una respuesta ''depende", que no permite completar el argumento. Para esto necesitaremos el algoritmo ''come-arista".
+\begin{center}
+\includegraphics[height=4cm]{/home/gabriel/Escritorio/Informe_TC3/Images/5m.png}\\
+Figura 4: Grafos Planos
+\end{center}
+
+\subsection{Árboles}
+Consideremos un árbol G con n vértices. Fijemos uno cualquier de esos vértices como raíz. Desde la raíz, partimos los vértices en generaciones. Como podemos usar el mismo color en toda una generación, y como cada dos generaciones podemos repetir colores, podemos usar k colores para la raíz y k-1 para cada uno de los vértices de las generaciones siguientes. Tenemos así que:
+\begin{center}
+$P_G(k)=k(k-1)^{n-1}$ si G es un árbol con n vértices.
+\end{center}
+Este ejemplo nos permite obtener una cota general para grafos conexos. Supongamos que G es un grafo conexo con n vértices. Sabemos ya que hay un subgrafo H que tiene los mismos vértices que G y que, además, es un árbol: un árbol abarcador de G. De la existencia de este subgrafo deducimos la siguiente cota:
+\begin{center}
+$P_G(k) \leq P_H(k)=k(k-1)^{n-1}$
+\end{center}
+compárese con la cota general $P_G(k) \leq k^n$, que es válida para todo grafo con n vértices, conexo o no.
+
+\section{Problema Computacional}%Articulo más definido ver y expandir
+Un problema computacional constituye una pregunta a ser respondida, teniendo generalmente varios parámetros, o variables libres, cuyos valores no se han especificado. Un problema se describe mediante:
+\begin{enumerate}
+\item Una descripción general de todos sus parámetros (pueden ser de entrada o de salida).
+\item Una sentencia que describa las propiedades que la después, o la solución, debe cumplir.
+\end{enumerate}
+Una instancia de un problema se obtiene cuando se especifican valores particulares para todos los parámetros del problema. Por ejemplo, consideremos el problema test de primalidad. La instancia es un número (ej 15) y la solución es ''si" si el número es primo, y ''no" en caso contrario. Visto de otra manera, la instancia es una entrada particular del problema, y la solución es la salida correspondiente para la entrada dada.
+
+\section{Problema de Decisión}
+Un problema de decisión es un tipo especial de problema computacional cuya respuesta es solamente ''si" o ''no" (o, de manera más formal, ''1" o ''0").\\
+Un problema de decisión pudiera verse como un lenguaje formal, donde los elementos que pertenecen al lenguaje son las instancias del problema cuya respuesta es ''si", los que no pertenecen al lenguaje son aquellas instancias cuya respuesta es ''no". El objetivo es decidir, con la ayuda de un algoritmo, si una determinada entrada es un elemento del lenguaje formal considerado. Si el algoritmo devuelve como respuesta ''si", se dice que el algoritmo acepta la entrada, de lo contrario se dice que la rechaza.\\
+Los problemas de decisión constituyen uno de los principales objetos de estudio de la teoría de la complejidad computacional, pues la NP-completitud se aplica directamente a estos tipos de problemas en vez de a problemas de optimización. Estos problemas tienen gran importancia porque casi todo problema puede transformarse en un problema de decisión.
+
+\section{Algoritmo de Tiempo Polinómico y Problema Intratables}
+Los científicos de la computación realizan la distinción entre algoritmos de Tiempo polinómico y algoritmos de tiempo exponencial cuando se trata de caracterizar a los algoritmos como ''suficientemente eficiente" y ''muy ineficiente" respectivamente.
+Un algoritmo de tiempo polinomial se define como aquel con función de complejidad temporal en O(p(n)) para alguna función polinómica p, donde n denota el tamaño de la entrada. Cualquier algoritmo cuya función de complejidad temporal no pueda ser acotada de esta manera, se denomina algoritmo de tiempo exponencial.
+La mayoría de los algoritmos de tiempo exponencial son simples variaciones de una búsqueda exhaustiva, mientras que los algoritmos de tiempo polinomial, usualmente se obtienen mediante un análisis más profundo de la estructura del problema. En la teoría de la complejidad computacional, existe el consenso de que un problema no está ''bien resuelto" hasta que se conozca un algoritmo de tiempo polinomial que lo resuelva. Por tanto, nos referiremos a un problema como intratable, si es tan difícil que no existe algoritmo de tiempo polinomial capaz de resolverlo.
+
+\section{Maquina de Turing}
+\subsection{Definición}
+Una Maquina de Turing (TM) se representa por un 7-upla\\
+\begin{center}
+$\mathsf{M = (Q,\sum,\Gamma,\delta,q_0,B,F)}$
+\end{center}
+donde: \\
+$\mathbf{Q}$ es el conjunto finito de estados, \\
+$\mathbf{\Gamma}$ es el conjunto finito de símbolos de cintas admitibles,\\
+$\mathbf{B}$ símbolo de $\Gamma$, es el espacio en blanco, \\
+$\mathbf{\sum}$ subconjunto de $\Gamma$ que no incluye a B, es el conjunto de los símbolos de entrada,\\
+$\mathbf{\delta}$ en la función de movimientos siguiente, una transformación de QX$\Gamma$ a QX$\Gamma$X(L,R) ($\delta$ puede, sin embargo, permanecer indefinida para algunos argumentos),\\
+$\mathbf{q_0}$ en Q es el estado inicial,\\
+$\mathbf{F \subseteq Q}$ es el conjunto de estados finales.
+
+\subsection{Determinista y No Determinista}
+La entrada de una máquina de Turing viene determinada por el estado actual y el símbolo leído, un par (estado, símbolo), siendo el cambio de estado, la estructura de un nuevo símbolo y el movimiento del cabezal, las acciones a tomar en función de una entrada. En el caso de que para cada par (estado, símbolo) posible exista a lo sumo una posibilidad de ejecución, se dirá que es una maquina de Turing determinista, mientras que en el caso de que exista al menos un par (estado, símbolo) la maquina tiene un numero finito de alternativas para el siguiente movimiento	. Mientras que una maquina determinista sigue un único ''camino computacional", una maquina no determinista tiene un ''árbol computacional". Si cualquiera de las ramas de árbol finaliza en un estado de aceptación, se dice que la maquina acepta la entrada.\\
+El no determinismo no le permite a la máquina de Turing aceptar nuevos lenguajes. Además ambas versiones son equivalentes pues existe el siguiente teorema: \textsc{L es aceptado por una máquina de Turing no determinística $M_1$, entonces L es aceptado por alguna máquina de Turing determinística $M_2$}.\\
+No obstante la velocidad de ejecución de ambos varia, si una maquina no determinista M reconoce una cierta palabra de tamaño n en un tiempo O(t(n)), la maquina determinista equivalente reconocerá la palabra en un tiempo O($2^{t(n)}$). Podemos concluir que el no determinismo reducirá la complejidad de la solución de los problemas.
+
+\section{Clases de Complejidad Computacional}
+Vamos a definir las clases de complejidad computacional a través de las máquinas de Turing deterministas y no deterministas:
+\subsection{Complejidad P} 
+Una clase de complejidad \textbf{TIME}(f(n)) es el conjunto de lenguajes L tales que una máquina de Turing(determinista) decide L en tiempo f(n).
+El conjunto \textbf{P} contiene todos los lenguajes decididos por máquina de Turing(deterministas) en tiempo polinomial,\\
+\begin{center}
+P = $\bigcup_{k>0}$ TIME$(n^k)$
+\end{center}
+
+\subsection{Complejidad NP}
+Una clase de complejidad \textbf{NTIME}(f(n)) es el conjunto de lenguajes L tales que una máquina de Turing no determinista decide L en tiempo f(n).
+El conjunto NP contiene todos los lenguajes decididos por máquinas de Turing no deterministas en tiempo polinomial,\\%maquinas que adivinan el siguiente paso.
+\begin{center}
+NP = $\bigcup_{k>0}$ NTIME$(n^k)$
+\end{center}
+
+\subsection{Complejidad NP-Hard y NP-Completo}
+Un problema de decisión C es NP-Completo si:
+\begin{enumerate}
+\item C este contenido en el conjunto NP y
+\item Todo problema de NP es reducible a C en tiempo polinomial.
+\end{enumerate}
+Se puede demostrar que C es NP demostrando que un candidato a solución de C puede ser verificado en tiempo polinómico. Una transformación polinómica de L en C es un algoritmo determinista que transforma instancias de l $\in$ L en instancias de c $\in$ C, tales que la después de c es positiva si y solo si la respuesta de L lo es.\\
+El conjunto NP-Hard se asume que el lenguaje L satisface la propiedad 2, pero no la 1. La clase NP-Completo puede definirse alternativamente como la intersección entre NP y NP-Hard.\\
+Algunas consecuencias de la definición son:
+\begin{itemize}
+\item Como NP-completo es el tipo más costoso de la clase NP, el problema H es al menos tan costoso como NP, pero H no tiene por qué estar en NP y por tanto no tiene por qué ser un problema de decisión.
+\item Los problemas NP-completos se pueden transformar unos en otros por una reducción polinómica, los problemas NP-completos pueden ser resueltos en tiempo polinómico por reducción a H, así que todos los problemas de NP se reducen a H; sin embargo, esto implica utilizar dos tipos diferentes de transformaciones: de problemas de decisión NP-Completos a un problema NP-completo L por transformaciones polinómicas, y de L a H por reducción polinómica de Turing.
+\item Si hay algún algoritmo polinómico para resolver un problema NP-Hard, entonces hay algoritmos para resolver todos los problemas de NP en tiempo polinómico, esto significaría que P=NP.
+\item Si un problema de optimización H tiene una versión NP-completa, entonces H es NP-Hard.
+\item Si H pertenece a NP, entonces H pertenece también a NP-Completo porque en este caso existe una transformación polinómica de Turing que cumple los requisitos de las transformaciones polinómicas.
+\end{itemize}
+
+\subsection{Reducción Polinomial}
+Una reducción es una transformación de un problema en otro problema. Intuitivamente, un problema Q puede ser reducido a otro problema $Q'$, si cualquier instancia del problema Q puede ser ''fácilmente" expresada como una instancia del problema $Q'$, y cuya solución proporcione una solución para la instancia de Q.
+Para ello utilizaremos la reducción en tiempo polinomial (o reducción de Karp o transformación polinómica), lo cual significa que el proceso de reducción toma un tiempo polinomial. La transformacion polinomica es una manera de relacionar dos problemas de decisión, de manera que la existencia de un algoritmo que resuelve el primer problema, garantiza inmediatamente, y atreves de un tiempo polinómico, la existencia de un algoritmo que resuelve el segundo.
+Formalmente, sean L y M lenguajes formales sobre los alfabetos $\sum$ y $\Gamma$, respectivamente, una transformación polinómica de L en M es una función computable:
+\begin{center}
+$\mathfrak{f}:\sum^*\rightarrow\Gamma^*$
+\end{center}
+que puede ser calculada en tiempo polinómico en función del tamaño de la entrada, y que está definida por:
+\begin{center}
+$w \in L \Leftrightarrow \mathfrak{f}(w) \in M$
+\end{center}
+para todo elemento w de $\sum^*$
+Cuando esta función f existe, se dice que ''L es polinomicamente transformable de M".
+%\subsection{Otras clases de complejitud importantes}
+%\begin{center}
+%\includegraphics[height=10cm]{/home/gabriel/Escritorio/7m.png}\\
+%\end{center}
+
+\section{Conjetura P=NP}
+Intuitivamente, creemos que P es un subconjunto de NP. Y, efectivamente, cada problema de decisión resuelto por un algoritmo de tiempo polinomial determinista, también puede ser resuelto por un algoritmo de tiempo polinomial no determinista. Simplemente se necesita observar que cualquier algoritmo determinista puede ser utilizado en la etapa de verificación de un algoritmo no determinista. Si B es un problema de P, y A es un algoritmo de tiempo polinomial para B, entonces se puede construir un algoritmo de tiempo polinomial no determinista para B, simplemente utilizando A en la etapa de verificación e ignorando la etapa de adivinación. Por tanto, si B pertenece a P, entonces B también pertenece a NP.\\
+La pregunta P=NP es una de las más importantes, debido a las grandes repercusiones que habría, en caso de encontrarse una solución. Si P=NP, cualquier problema polinómicamente verificable sería polinómicamente decidible. La mayoría de los investigadores cree que estas clases no son iguales, porque se ha realizado bastantes esfuerzos, sin éxito, para encontrar algoritmos de tiempo polinomial para varios problemas en NP. Los investigadores también han tratado de probar que las clases son distintas, pero eso conllevaría a mostrar que no existe un algoritmo «eficiente» para reemplazar a la búsqueda por fuerza bruta.
+\begin{center}
+\includegraphics[height=6cm]{/home/gabriel/Escritorio/Informe_TC3/Images/6m.png}\\
+Figura 5: Diagrama de venn
+\end{center}
+
+\chapter{Metodología}
+\section{Complejidad Computacional del Problema}
+La coloración de grafos es computacionalmente difícil pues ver si un grafo dado admite k-colores distintos para un k vértice dado será un problema NP-Completo, exceptuando los casos $k \in \{0,1,2\}$. En particular, es NP-Hard calcular el número cromático. Sin embargo, por cada $k < 3$, existe un k-esimo color de un grafo plano por el \textsl{teorema de 4 colores}, y es posible controlar tal coloración en el tiempo polinomial.\\
+El algoritmo de aproximación más conocido calcula una coloración de tamaño como máximo dentro de un factor $O(n(loglogn)^2 (log n)^{-3})$ del número cromático. Para todo $\epsilon > 0$, aproximar el número cromático dentro de $n^{1-\epsilon}$ es NP-Hard.\\
+%La computación de los coeficientes del polinomio cromático es $\#P-Hard$. De hecho, incluso calculando el valor de $\chi (G,k)$ es $\#P-Hard$ en cualquier punto racional k excepto k = 1 y k = 2. No hay FPRAS\footnote{polynomial-time approximation scheme\ref{chap:PTAS}} para evaluar el polinomio cromático en ningún punto racional $k \geq 1.5$ excepto k = 2 a menos que NP = RP.\\
+%Para colorear los bordes, la prueba del resultado de Vizing proporciona un algoritmo que utiliza como máximo $\delta + 1$ colores. Sin embargo, la decisión entre los dos valores candidatos para el numero cromático de borde es NP-Completo. En términos de algoritmos de aproximación , el algoritmo de Vizing muestra que el número cromático de borde se puede aproximar a $\frac{4}{3}$, y el resultado de dureza muestra que no existe ($\frac{3}{3} - \epsilon$) para cualquier $\epsilon > 0$ a menos que P = NP.
+
+\section{Algoritmos Heurísticos}
+Dado la ''intratabilidad" del problema, no existe un algoritmo concreto que permita obtener en tiempo polinómico la solución optima a la coloración de cualquier grafo. Por lo tanto, para obtener soluciones del problema de coloración de grafos, se dispone de varias alternativas: \\
+\begin{itemize}
+\item Intentar aplicar una solución exacta.
+\item Aplicamos una Heurística.
+\end{itemize}
+Si bien al querer usar un método exacto solo nos funcionaría para grafos pequeños, pues, al tratarse de un problema NP-Completo, estas técnicas no son viables en la mayoría de los casos, pues resultan bastante costosas en términos de tiempo computacional. Solo en la coloración de los grafos más sencillos se podría obtener una solución optima en un tiempo computacional razonable.\\
+Con el objetivo de reducir dicho tiempo computacional, podríamos hacer uso de un algoritmo heurístico que permita obtener soluciones "buenas" (muy aproximados) en tiempos computacionales aceptables, pero hay un problema las heurísticas no garantizan que se vaya a obtener la solución optima del problema, incluso podría suceder que no se obtenga ninguna solución.\\
+
+\subsection{Algoritmos Voraz, DSatur y RLF}
+Estos tres algoritmos son diseñados específicamente para la resolución del problema de coloración de grafos. Cualquiera de estos algoritmos proporciona una solución factible al problema, pudiendo ser esta optima o no. \\
+
+\subsubsection{Algoritmo Voraz}
+Se trata de uno de los algoritmos más simples y al mismo tiempo de uno de los algoritmos heurísticos mas importantes en coloración de grafos. El algoritmo opera tomando los vértices del grafo uno a uno siguiendo un orden (que puede ser aleatorio), y asignando a cada vértice el primer color disponible. Al tratarse de un algoritmo heurístico, tal y como hemos comentado previamente, la solución proporcionada por este algoritmo puede no ser óptima. Sin embargo, una correcta elección del orden de los vértices para su coloración puede producir una solución óptima para cualquier grafo.\\
+Este algoritmo produce soluciones factibles de forma rápida, aunque estas soluciones pueden resultar ''pobres" en base al número de colores que requiere el algoritmo, comparado con el numero cromático del grafo. A continuación podemos ver el pseudocodigo:\\
+\begin{center}
+\includegraphics[height=6cm]{/home/gabriel/Escritorio/Informe_TC3/Images/8m.png}\\
+Figura 6: Pseudocódigo algoritmo Voraz
+\end{center}
+Partimos de la solución vacía $ S = \emptyset $ y de una permutación aleatoria de los vértices $\pi$. En cada iteración, el algoritmo selecciona los vértices \textsf{i-}ésimo en la permutación, $\pi_i$, y trata de encontrar una clase de color $S_j \in S$en la cual pueda ser incluido dicho vértice. Si es posible, se añade dicho vértice a la clase de color correspondiente y el algoritmo pasa a considerar el siguiente vértice $\pi_{i+1}$. En caso contrario, se crea una nueva clase de color para el vértice considerado.
+\subsubsection{Propiedades del algoritmo}
+En el peor de los casos, se deberá realizar una comprobación de $0+1+2+....+(n-1)$ restricciones, lo que proporciona al algoritmo Voraz una complejidad computacional del orden $O(n^2)$.
+\begin{tm}
+\textsl{Sea S una coloración factible de un grafo G. Si cada clase de color $S_i \in S$ (para $1 \leq i \leq \abs{S}$) se considera en un momento, y todos los vértices se introducen de uno en uno en el algoritmo Voraz, la solución resultante $S'$ será también factible, con $\abs{S'} \leq \abs{S} $}
+\end{tm}
+
+\begin{tm}
+\textsl{Sea G un grafo con una solución óptima S = $\{S_1,...,S_k\}$ al problema de coloración de grafo, donde k = $\chi(G)$. Entonces, existen al menos:}
+\begin{equation}
+\chi(G)!\prod_{i=1}^{\chi(G)} \abs{S_i}! 
+\end{equation}
+\textsl{permutaciones de los vértices donde, al aplicar el algoritmo Voraz sobre ellas, se obtendrá una solución optima del problema}
+\end{tm}
+
+\subsubsection{Algoritmo DSatur}
+El algoritmo de DSatur (Degree Saturation), propuesto por Brélez (1979), se comporta de forma muy similar al algoritmo Voraz, con la salvedad de que, en este caso, la ordenación de los vértices es generada por el propio algoritmo. Así como en el algoritmo voraz la ordenación se decida antes de que ningún vértice fuera coloreado, en el algoritmo DSatur, el orden de los vértices se decide de forma heurística en base a las características del coloreado parcial del grafo en el momento en el que selecciona cada uno de los vértices. Veamos ahora un concepto clave a la hora de planear el orden de los vértices del grafo, el grado de saturación de los vértices.\\
+\begin{thm}
+\textsl{Sea c(v) = NULL para cualquier vértice v $\in V$ que todavía no haya sido asignado a ninguna clase de color. Dado entonces el vértice v, el grado de saturación de v, sat(v), es el número de colores diferentes asignados a los vértices adyacentes, es decir, sat(v)$=\abs{\{c(v):u \in \Gamma(v)$ y $c(u) \not =  NULL \}}$}
+\end{thm}
+\begin{center}
+\includegraphics[height=6cm]{/home/gabriel/Escritorio/Informe_TC3/Images/9m.png}\\
+Figura 7: Pseudocódigo algoritmo DSatur
+\end{center}
+El pseudocodigo asociado al algoritmo DSatur, usa un conjunto, X, para definir el conjunto de vértices que todavía no han sido asignados a un color. Evidentemente, al inicio de la ejecución, X=V. La parte más importante de este algoritmo se encuentra en el paso 2, donde el siguiente vértice en ser coloreado será aquel vértice en X que presente el máximo grado de saturación, y en caso de exista más de uno, aquel con mayor grado. Si sigue habiendo más de un vértice en estas condiciones, se escoge uno de ellos aleatoriamente.\\
+La idea de este algoritmo es priorizar la coloración de aquellos vértices que tienen menos opciones de ser coloreados con un color ya existente (los que presentan un mayor número de restricciones). Una vez que un vértice es coloreado, se elimina del conjunto X y se vuelve a comenzar el algoritmo para un nuevo vértice.\\
+\subsubsection{Propiedades del algoritmo}
+\begin{tm}
+\textsl{El algoritmo DSatur es exacto para grafos bipartitos.}
+\end{tm}
+
+\begin{tm}
+\textsl{El algoritmo DSatur es exacto para ciclos y para grafos circulares.}
+\end{tm}
+
+\subsubsection{Algoritmo RLF}
+El algoritmo que analizaremos a continuación sigue un planteamiento un poco diferente con respecto a los dos anteriores. El algoritmo RLF (''Recursive Largest First"), propuesto por Leighton (1979), funciona coloreando un grafo con un color por cada iteración de algoritmo, en vez de un vértice por iteración. en cada iteración, el algoritmo busca conjuntos de vértices independientes en el grafo, y se procederá de la misma forma con el subgrafo restante, hasta que dicho subgrafo sea vacío, en cuyo caso todos los vértices estarán asignados a algún color, produciendo así una solución factible.
+\begin{center}
+\includegraphics[height=6cm]{/home/gabriel/Escritorio/Informe_TC3/Images/10m.png}\\
+Figura 8: Pseudocódigo algoritmo RLF
+\end{center}
+El algoritmo hace uso de dos conjuntos, X, que contiene a los vértices que no han sido coloreados y que se pueden añadir a las clases $S_i$ sin provocar ningún conflicto (es decir, una situación en la que, dado $u,v \in V$ tales que $\{u,v\} \in E$, se tiene que c(u)=c(v)), e Y, que contiene a los vértices que no han sido coloreados y que no pueden ser añadidos de forma factible por $S_i$ (es decir, que no pueden ser coloreados por el color i). Evidentemente, al inicio del algoritmo, X = V e Y = $\emptyset$. Una vez que X e Y estén vacíos, todos los vértices habrán sido coloreados. Entre los pasos 4 y 8 del algoritmo, se selecciona un vértice v $\in X$ y se añada el conjunto $S_i$ (se colorea con el color i). A continuación, se mueven al conjunto Y todos los vértices vecinos a v en el subgrafo inducido por X, pues estos no pueden ser coloreados con el color i. Se colorea al resto de elementos de X con el color i, y, por último, se vuelve a mover a todos los elementos de Y a X para volver a comenzar con el primer paso del algoritmo y continuar con la clase de color $S_{i+1}$ en caso de que fuera necesario.\\
+De la misma forma que el algoritmo DSatur, se da prioridad a aquellos vértices que tienen mayor número de ''restricciones", esto es, aquellos vértices que tenga mayor grado.
+\begin{tm}
+\textsl{El algoritmo RLF es exacto para grafos bipartitos.}
+\end{tm}
+
+\begin{tm}
+\textsl{El algoritmo RLF es exacto para ciclos y para grafos circulares.}
+\end{tm}
+
+\subsection{Métodos Exactos}
+\subsubsection{Algoritmos de retroceso}
+El retroceso es un método general que puede utilizarse para determinar la solución optima, a un problema computacional como puede ser el problema de coloración de grafos. Estos algoritmos obtienen la solución de forma sistemática, transformando soluciones parciales en soluciones completas.\\
+Durante el proceso de construcción, dado que no es posible obtener una solución optima a partir de la solución parcial, el algoritmo retrocede para intentar encontrar el camino adecuado para ajustar la solución parcial actual. En lo referente al problema de coloración de grafos, actuaria de la siguiente forma.\\
+Dado un grafo G = (V,E), es primer lugar se ordena los vértices de forma que $v_i$ ($1 \leq i \leq n$)se corresponde con el vértice i-ésimo en dicho ordenación. Además, se debe seleccionar un valor de k denotando el número de colores disponibles. Inicialmente, k=$\infty$.\\
+En ese momento, el algoritmo realiza una serie de pasos hacia delante y hacia atrás. En los pasos hacia delante, el algoritmo colorea los vértices en el orden indicando hasta que identifica un vértice que no puede ser coloreado por ninguno de los k colores disponibles. Por otra parte, en los pasos hacia atrás, el algoritmo retrocede sobre los vértices coloreados y trata de identificar en que puntos, se vuelve a realizar una serie de pasos hacia delante. Si se encuentra alguna coloración factible, entonces se puede fijar k como el número de colores utilizado en dicha coloración menos 1, continuando con la ejecución del algoritmo. Finalmente, el algoritmo termina cuando un paso hacia atrás alcanza el vértice raíz $v_1$, o cuando se llega a algún otro criterio de parada (por ejemplo, límite de tiempo máximo).
+\begin{center}
+\includegraphics[height=8cm]{/home/gabriel/Escritorio/Informe_TC3/Images/11m.png}\\
+Figura 9: Coloración mediante el algoritmo de retroceso
+\end{center}
+Aquí podemos ver un ejemplo de cómo aplicar el algoritmo de retroceso para mejorar la solución a un problema de coloración de grafos. Así, en los pasos 1 y 4 se realiza una primera coloración mediante el algoritmo voraz, obteniendo una 4-coloracion del grafo y fijando así el número de colores disponibles a 3. Retrocediendo en los vértices, no es posible definir ningún color alternativo hasta el $v_3$. En los pasos 8 y 9 se lleva a cabo la nueva coloración de los vértices, obteniendo así una coloración con 3 colores, mejor que la obtenida inicialmente. En este momento, fijando en 2 el número de colores disponibles, al retroceder sobre los vértices, alcanzamos el vértice $v_1$ sin poder modificar la coloración de ninguno de los vértices, de forma que el algoritmo finalizaría con la 3-coloraicon obtenida. En consecuencia, el número cromático de este grafo es 3.
+
+\subsubsection{Programación Entera}
+Otra forma de obtener un algoritmo exacto para la coloración de grafos es utilizar la programación entera (Integer Programming IP), que no es más que un tipo de programación lineal en el que algunas de las variables de decisión están restringidas a tomar valores enteros y cuya función objetivo es minimizar el número de colores utilizados. Veamos cómo podemos formular el problema de coloración de grafos como un problema de programación entera.\\
+Sea G=(V,E) un grafo con n vértices y m aristas. Probablemente, la formulación más simple se obtiene utilizando dos matrices binarias, $X \in \mathbb{R}_{\mathfrak{n}\mathnormal{x}\mathfrak{n}} $ e $Y \in \mathbb{R}_{\mathfrak{n}\mathnormal{x}1}$, conteniendo las variables del problema. Dichas matrices cuyos elementos serán binarios, se interpretan de la siguiente forma:\\
+\begin{equation}
+     X_{ij} = \left\{
+	       \begin{array}{ll}
+			1 	& 	$si el vértice$ v_i $se asigna al color j$\\
+			0   &	$en otro caso$\\
+	       \end{array}
+	     \right.
+\end{equation}
+
+\begin{equation}
+     Y_{ij} = \left\{
+	       \begin{array}{ll}
+			1 	& 	$si al menos un vértice es asignado al color j$\\
+			0   &	$en otro caso$\\
+	       \end{array}
+	     \right.
+\end{equation}
+Como hemos comentado, el objetivo de este modelo es minimizar el número de colores a utilizar un base a la función objetivo:
+\begin{equation}
+min \sum_{j=1}^n Y_j
+\end{equation}
+sujeto a las siguientes restricciones:
+\begin{equation}
+X_{ij} + X_{lj} \leq Y_j \quad \forall \{v_i,v_l\} \in E, \quad \forall j \in \{1,.....,n\}
+\end{equation}
+\begin{equation}
+ \sum_{j=1}^{n} X_{ij} = 1  \quad \forall v_i \in V
+\end{equation}
+donde la restricion (2.5) garantiza que ningún par de vértices adyacentes es asignado al mismo color y que $Y_j = 1$ si y solo si algún vértice es asignado al color j. Por su parte, la restricción (2.6) especifica que cada vértice debe ser asignado exactamente a un único color.
+
+%\subsection{Algoritmo Metaheuristico}
+\section{SAT y 3SAT}
+El Problema de satisfacibilidad booleana (también llamado SAT) es el problema de saber si, una expresión booleana con variables y cuantificadores, hay alguna asignación de valores para sus variables que hace que la expresión sea verdadera, en otras palabras, Dado un conjunto de cláusulas. ¿Existe un conjunto de valores booleanos para una determinada expresión que la haga verdadera? \\
+Fue el primer problema identificado como perteneciente a la clase de complejidad NP-Completo por Stephen Cook en el año 1971.
+Comenzamos con una lista de variables booleanas $x_1,....,x_n$. Un literal es una de las variables $x_i$ (o la negación de una de las variables $\neg x_i$). Hay 2n literales posibles. Una clausula es un conjunto de literales.\\
+Lo que hay que hacer es asignar valores booleanos Verdaderos(V) o Falso(F) a cada una de las variables. De este modo a cada uno de los literales se le asigna un valor booleano. Finalmente, una clausula tiene valor V si y solo si al menos uno de los literales de la cláusula tiene un valor V, en otro caso tendrá un valor F.
+Un conjunto de cláusulas es satisfactible si existe una asignación de valores booleanos a las variables que hagan que todas las clausulas sean ciertas. Consideramos or entre cada uno de los literales en una clausula y and entre las clausulas.
+Ejemplo: Consideramos un conjunto de variable $x_1$,$x_2$,$x_3$. Podemos construir la siguiente lista de cláusulas.
+\begin{center}
+$\{x_1, \neg x_2 \}$ $\{x_1 , x_3\}$ $\{ x_2 , \neg x_3\}$ $\{ \neg x_1 , x_3\}$
+\end{center}
+Si elegimos los valores (V,V,F) para las variables ($x_1$,$x_2$,$x_3$) respectivamente, entonces los valores de las cuatro clausulas será (T,T,T,F), así que no podría ser una asignación válida para satisfacer el conjunto de cláusulas. Existen 8 posibles asignaciones ($2^{n=3}$). Al final obtenemos como asignación satisfactoria a (T,T,T).\\
+El ejemplo nos deja la sensación de que SAT debe ser un complicado problema computacional, porque hay $2^n$ posibles conjuntos de valores que pueden resolver el problema. Está absolutamente claro, sin embargo, el problema pertenece a la clase de complejidad NP. Efectivamente, es un problema de decisión. Además, podemos asignar fácilmente un certificado a todos los conjuntos de cláusulas para cual la respuesta a SAT es ''Sí, las cláusulas son satisfactibles". El certificado contiene un conjunto de valores, uno por cada variable, que satisface todas las cláusulas. Una máquina de Turing que recibe un conjunto de cláusulas, apropiadamente codificadas, como entrada, acompañadas del certificado tendría que verificar solamente que si los valores son asignados a las variables como se muestra en el certificado entonces efectivamente cada cláusula contiene al menos un literal de valor V. Esa verificación se realiza en tiempo polinómico.\\
+La 3-SAT (3-satisfactibilidad) es un caso especial de SAT, o simplemente satisfactibilidad, en la que cada clausula contiene exactamente 3 literales. Fue uno de los 21 Problemas de NP-Completos de Karp.\\
+Partiendo de SAT se reduce a 3-SAT se puede demostrar que es NP-Completo, entonces podemos usarlo para demostrar también otros problemas NP-Completos. Un ejemplo de este tipo de reducción es el problema de Clique. Por lo general, es más fácil utilizar reducción de 3-SAT que cuando se está tratando de probar que algún otro problema es NP-Completo.\\
+
+\end{document}
